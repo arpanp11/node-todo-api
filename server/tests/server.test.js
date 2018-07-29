@@ -96,6 +96,6 @@ describe('POST /user', () => {
                     expect(user.length).toBe(0);
                     done();
                 }).catch((e) => done());
-            })
-    })
+            });
+    });
 });

@@ -12,13 +12,15 @@ beforeEach((done) => {
 describe('POST /user', () => {
     it('should create a new user data', (done) => {
         var name = 'Dizy';
+        var email ='dizy@yahoo.com';
 
         request(app)
             .post('/user')
-            .send({ name })
+            .send({ name, email })
             .expect(200)
             .expect((res) => {
                 expect(res.body.name).toBe(name);
+                expect(res.body.email).toBe(email);
             })
             .end((err, res) => {
                 if (err) {
@@ -28,6 +30,7 @@ describe('POST /user', () => {
                 User.find().then((user) => {
                     expect(user.length).toBe(1);
                     expect(user[0].name).toBe(name);
+                    expect(user[0].email).toBe(email);
                     done();
                 }).catch((e) => done(e));
             });

@@ -10,7 +10,7 @@ var User = mongoose.model('User', {
     },
     email: {
         type: String,
-        //required: true,
+        required: true,
         trim: true,
         minlegnth: 1
     },

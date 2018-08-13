@@ -134,9 +134,9 @@ app.delete('/user/:id', (req, res) => {
       res.status(400).send();
     });
   });
-  
+
 app.listen(port, () => {
-    console.log(`Started on port ${port}.`);
+    console.log(`Started on port: ${port}.`);
 });
 
 module.exports = { app };

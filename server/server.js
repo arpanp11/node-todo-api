@@ -1,11 +1,13 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const { ObjectID } = require('mongodb');
 
 var { mongoose } = require('./db/mongoose');
 var { Todo } = require('./models/todo');
 var { User } = require('./models/user');
 
 var app = express();
+var port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 
@@ -46,6 +48,26 @@ app.get('/todos', (req, res) => {
     });
 });
 
+//get todos/id route
+app.get('/todos/:id', (req, res) => {
+
+    var id = req.params.id;
+
+    if (!ObjectID.isValid(id)) {
+        return res.status(400).send();
+    }
+
+    Todo.findById(id).then((todo) => {
+        if (!todo) {
+            return res.status(404).send();
+        }
+
+        res.send({ todo });
+    }).catch((e) => {
+        res.status(400).send();
+    });
+});
+
 //get user route
 app.get('/user', (req, res) => {
     User.find().then((user) => {
@@ -55,8 +77,28 @@ app.get('/user', (req, res) => {
     });
 });
 
-app.listen(3000, () => {
-    console.log('Started on port 3000.');
+//get user/id route
+app.get('/user/:id', (req, res) => {
+
+    var id = req.params.id;
+
+    if (!ObjectID.isValid(id)) {
+        return res.status(400).send();
+    }
+
+    Todo.findById(id).then((doc) => {
+        if (!doc) {
+            return res.status(404).send();
+        }
+
+        res.send({ doc });
+    }).catch((e) => {
+        res.status(400).send();
+    });
+});
+
+app.listen(port, () => {
+    console.log(`Started on port ${port}.`);
 });
 
 module.exports = { app };

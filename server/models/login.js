@@ -3,8 +3,7 @@ const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 
-//Login 
-
+//Login Schema
 var LoginSchema = new mongoose.Schema({
     email: {
         type: String,
@@ -35,10 +34,10 @@ var LoginSchema = new mongoose.Schema({
 });
 
 LoginSchema.methods.toJSON = function () {
-var login = this;
-var loginObject = login.toObject();
+    var login = this;
+    var loginObject = login.toObject();
 
-return _.pick(loginObject, ['_id', 'email']);
+    return _.pick(loginObject, ['_id', 'email']);
 };
 
 LoginSchema.methods.generateAuthToken = function () {
@@ -52,6 +51,8 @@ LoginSchema.methods.generateAuthToken = function () {
         return token;
     });
 };
+
+//Login model
 var Login = mongoose.model('Login', LoginSchema);
 
 module.exports = { Login };

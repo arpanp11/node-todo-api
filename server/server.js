@@ -9,6 +9,7 @@ var { mongoose } = require('./db/mongoose');
 var { Todo } = require('./models/todo');
 var { User } = require('./models/user');
 var { Login } = require('./models/login');
+var { authenticate } = require('./middleware/authenticate');
 
 var app = express();
 var port = process.env.PORT || 3000;
@@ -139,9 +140,7 @@ app.delete('/user/:id', (req, res) => {
     });
 });
 
-app.listen(port, () => {
-    console.log(`Started on port: ${port}.`);
-});
+
 
 //update todos route
 app.patch('/todos/:id', (req, res) => {
@@ -205,4 +204,13 @@ app.post('/login', (req, res) => {
         res.status(400).send(e);
     })
 });
+
+app.get('/login/me', authenticate, (req, res) => {
+    res.send(req.user);
+  });
+
+app.listen(port, () => {
+    console.log(`Started on port: ${port}.`);
+});
+
 module.exports = { app };

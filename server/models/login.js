@@ -52,6 +52,23 @@ LoginSchema.methods.generateAuthToken = function () {
     });
 };
 
+LoginSchema.statics.findByToken = function (token) {
+    var Login = this;
+    var decoded;
+  
+    try {
+      decoded = jwt.verify(token, 'dec16');
+    } catch (e) {
+      return Promise.reject();
+    }
+  
+    return Login.findOne({
+      '_id': decoded._id,
+      'tokens.token': token,
+      'tokens.access': 'auth'
+    });
+  };
+
 //Login model
 var Login = mongoose.model('Login', LoginSchema);
 

@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
+const bcrypt = require('bcryptjs');
 
 //Login Schema
 var LoginSchema = new mongoose.Schema({
@@ -55,20 +56,34 @@ LoginSchema.methods.generateAuthToken = function () {
 LoginSchema.statics.findByToken = function (token) {
     var Login = this;
     var decoded;
-  
-    try {
-      decoded = jwt.verify(token, 'dec16');
-    } catch (e) {
-      return Promise.reject();
-    }
-  
-    return Login.findOne({
-      '_id': decoded._id,
-      'tokens.token': token,
-      'tokens.access': 'auth'
-    });
-  };
 
+    try {
+        decoded = jwt.verify(token, 'dec16');
+    } catch (e) {
+        return Promise.reject();
+    }
+
+    return Login.findOne({
+        '_id': decoded._id,
+        'tokens.token': token,
+        'tokens.access': 'auth'
+    });
+};
+
+LoginSchema.pre('save', function (next) {
+    var login = this;
+
+    if (login.isModified('password')) {
+        bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(login.password, salt, (err, hash) => {
+                login.password = hash;
+                next();
+            })
+        })
+    } else {
+        next();
+    }
+});
 //Login model
 var Login = mongoose.model('Login', LoginSchema);
 

@@ -70,6 +70,27 @@ LoginSchema.statics.findByToken = function (token) {
     });
 };
 
+
+LoginSchema.statics.findByCredentials = function (email, password) {
+    var Login = this;
+
+    return Login.findOne({ email }).then((user) => {
+        if (!user) {
+            return Promise.reject();
+        }
+
+        return new Promise((resolve, reject) => {
+            bcrypt.compare(password, user.password, (err, res) => {
+                if (res) {
+                    resolve(user);
+                } else {
+                    reject();
+                }
+            });
+        })
+    });
+};
+
 LoginSchema.pre('save', function (next) {
     var login = this;
 
@@ -84,6 +105,7 @@ LoginSchema.pre('save', function (next) {
         next();
     }
 });
+
 //Login model
 var Login = mongoose.model('Login', LoginSchema);
 

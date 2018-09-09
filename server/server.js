@@ -190,7 +190,6 @@ app.patch('/todos/:id', (req, res) => {
 // });
 
 //POST /login
-
 app.post('/login', (req, res) => {
 
     var body = _.pick(req.body, ['email', 'password']);
@@ -205,12 +204,25 @@ app.post('/login', (req, res) => {
     })
 });
 
+//GET /login/me 
 app.get('/login/me', authenticate, (req, res) => {
     res.send(req.user);
-  });
+});
 
 app.listen(port, () => {
     console.log(`Started on port: ${port}.`);
 });
 
+//POST /login/singin
+app.post('/login/singin', (req, res) => {
+    var body = _.pick(req.body, ['email', 'password']);
+
+    Login.findByCredentials(body.email, body.password).then((user) => {
+        user.generateAuthToken().then((token) => {
+            res.header('x-auth', token).send(user);
+        });
+    }).catch((e) => {
+        res.status(400).send();
+    });
+});
 module.exports = { app };

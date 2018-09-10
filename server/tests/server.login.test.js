@@ -84,10 +84,10 @@ describe('POST /login', () => {
 });
 
 //PODT /login/signin route test
-describe('POST /login/singin', () => {
-    it('should singin user and return auth token', (done) => {
+describe('POST /login/signin', () => {
+    it('should signin user and return auth token', (done) => {
         request(app)
-            .post('/login/singin')
+            .post('/login/signin')
             .send({
                 email: users[1].email,
                 password: users[1].password
@@ -113,7 +113,7 @@ describe('POST /login/singin', () => {
 
     it('should reject invalid singin', (done) => {
         request(app)
-        .post('/login/singin')
+        .post('/login/signin')
         .send({
             email: users[1].email,
             password: users[1].password + '1'

@@ -214,7 +214,7 @@ app.listen(port, () => {
 });
 
 //POST /login/singin
-app.post('/login/singin', (req, res) => {
+app.post('/login/signin', (req, res) => {
     var body = _.pick(req.body, ['email', 'password']);
 
     Login.findByCredentials(body.email, body.password).then((user) => {

@@ -114,7 +114,6 @@ app.delete('/todos/:id', (req, res) => {
         if (!todo) {
             return res.status(404).send();
         }
-
         res.send(todo);
     }).catch((e) => {
         res.status(400).send();
@@ -196,7 +195,7 @@ app.post('/login', (req, res) => {
     var login = new Login(body);
 
     login.save().then(() => {
-        return login.generateAuthToken();
+        return user.generateAuthToken();
     }).then((token) => {
         res.header('x-auth', token).send(login);
     }).catch((e) => {
@@ -217,12 +216,22 @@ app.listen(port, () => {
 app.post('/login/signin', (req, res) => {
     var body = _.pick(req.body, ['email', 'password']);
 
-    Login.findByCredentials(body.email, body.password).then((user) => {
+    Login.findByCredentials(body.email, body.password).then((login) => {
         user.generateAuthToken().then((token) => {
-            res.header('x-auth', token).send(user);
+            res.header('x-auth', token).send(login);
         });
     }).catch((e) => {
         res.status(400).send();
     });
 });
+
+//DELETE /login/me/token
+app.delete('/login/me/token', authenticate, (req, res) => {
+    req.user.removeToken(req.token).then(() => {
+        res.status(200).send();
+    }, () => {
+        res.status(400).send();
+    });
+});
+
 module.exports = { app };

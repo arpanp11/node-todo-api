@@ -59,7 +59,7 @@ app.get('/todos/:id', (req, res) => {
     var id = req.params.id;
 
     if (!ObjectID.isValid(id)) {
-        return res.status(400).send();
+        return res.status(404).send();
     }
 
     Todo.findById(id).then((todo) => {
@@ -114,7 +114,7 @@ app.delete('/todos/:id', (req, res) => {
         if (!todo) {
             return res.status(404).send();
         }
-        res.send(todo);
+        res.send({ todo });
     }).catch((e) => {
         res.status(400).send();
     });
@@ -195,7 +195,7 @@ app.post('/login', (req, res) => {
     var login = new Login(body);
 
     login.save().then(() => {
-        return user.generateAuthToken();
+        return login.generateAuthToken();
     }).then((token) => {
         res.header('x-auth', token).send(login);
     }).catch((e) => {
@@ -217,7 +217,7 @@ app.post('/login/signin', (req, res) => {
     var body = _.pick(req.body, ['email', 'password']);
 
     Login.findByCredentials(body.email, body.password).then((login) => {
-        user.generateAuthToken().then((token) => {
+        login.generateAuthToken().then((token) => {
             res.header('x-auth', token).send(login);
         });
     }).catch((e) => {

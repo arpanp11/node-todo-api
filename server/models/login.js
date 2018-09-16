@@ -53,6 +53,16 @@ LoginSchema.methods.generateAuthToken = function () {
     });
 };
 
+LoginSchema.methods.removeToken = function (token) {
+    var login = this;
+
+    return login.update({
+        $pull: {
+            tokens: { token }
+        }
+    });
+};
+
 LoginSchema.statics.findByToken = function (token) {
     var Login = this;
     var decoded;

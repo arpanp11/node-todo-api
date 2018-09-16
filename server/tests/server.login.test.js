@@ -83,7 +83,7 @@ describe('POST /login', () => {
     });
 });
 
-//PODT /login/signin route test
+//POST /login/signin route test
 describe('POST /login/signin', () => {
     it('should signin user and return auth token', (done) => {
         request(app)
@@ -134,3 +134,23 @@ describe('POST /login/signin', () => {
         });
     });
 });
+
+//DELETE /login/me/token route test
+describe('DELETE /login/me/token', () => {
+    it('should remove auth token on logout', (done) => {
+      request(app)
+        .delete('/login/me/token')
+        .set('x-auth', users[0].tokens[0].token)
+        .expect(200)
+        .end((err, res) => {
+          if (err) {
+            return done(err);
+          }
+  
+          Login.findById(users[0]._id).then((user) => {
+            expect(user.tokens.length).toBe(0);
+            done();
+          }).catch((e) => done(e));
+        });
+    });
+  });

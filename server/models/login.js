@@ -44,7 +44,7 @@ LoginSchema.methods.toJSON = function () {
 LoginSchema.methods.generateAuthToken = function () {
     var login = this;
     var access = 'auth';
-    var token = jwt.sign({ _id: login._id.toHexString(), access }, 'dec16').toString();
+    var token = jwt.sign({ _id: login._id.toHexString(), access }, process.env.JWT_SECRET).toString();
 
     login.tokens = login.tokens.concat([{ access, token }]);
 
@@ -68,7 +68,7 @@ LoginSchema.statics.findByToken = function (token) {
     var decoded;
 
     try {
-        decoded = jwt.verify(token, 'dec16');
+        decoded = jwt.verify(token, process.env.JWT_SECRET);
     } catch (e) {
         return Promise.reject();
     }
